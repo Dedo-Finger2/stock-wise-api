@@ -47,7 +47,7 @@ export async function registerUser(app: FastifyInstance) {
           address: "stockwisecompanty@stock.com"
         },
         subject: "Validation link",
-        html: `<a href='${token}'>Click here</a>`
+        html: `<a href='http://localhost:3333/api/verify-token?token=${token}' target='_blank'>Click here</a>`
       });
 
       return reply.status(200).send({ message: "Check your e-mail inbox." });
