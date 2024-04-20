@@ -14,7 +14,7 @@
     "plugins": ["@typescript-eslint"],
     "rules": {
         "semi": "error",
-        "no-unused-vars": "warn",
+        "no-unused-vars": "off",
         "quotes":"error",
         "comma-dangle":"error",
         "comma-spacing":"error",
