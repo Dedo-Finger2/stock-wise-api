@@ -3,28 +3,28 @@ import { database } from "../config/database";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
 
-export async function createProductType(app: FastifyInstance) {
-  app.post("/api/product-types/", { preHandler: auth }, async (request, reply) => {
-    const createProductTypeBodySchema = z.object({
+export async function createUnitType(app: FastifyInstance) {
+  app.post("/api/unit-types/", { preHandler: auth }, async (request, reply) => {
+    const createUnitTypeBodySchema = z.object({
       name: z.string()
     });
     const requestCookiesSchema = z.object({
       userId: z.string().uuid()
     });
 
-    const { name } = createProductTypeBodySchema.parse(request.body);
+    const { name } = createUnitTypeBodySchema.parse(request.body);
     const { userId } = requestCookiesSchema.parse(request.cookies);
 
     try {
       const normalizedName = name.normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
+        .toUpperCase()
         .trim()
         .replaceAll(" ", "-")
         .replaceAll(".", "")
         .replaceAll("~", "");
 
-      const doesProductTypeAlreadyExistsWithProviedUserId = await database.productType.findUnique({
+      const doesUnitTypeAlreadyExistsWithProviedUserId = await database.unitType.findUnique({
         where: {
           userId_name: {
             userId,
@@ -33,18 +33,18 @@ export async function createProductType(app: FastifyInstance) {
         }
       });
 
-      if (doesProductTypeAlreadyExistsWithProviedUserId) {
-        return reply.status(400).send({ message: `There is a Product Type named ${normalizedName} already registered.` });
+      if (doesUnitTypeAlreadyExistsWithProviedUserId) {
+        return reply.status(400).send({ message: `There is a Unit Type named ${normalizedName} already registered.` });
       }
 
-      const newProductType = await database.productType.create({
+      const newUnitType = await database.unitType.create({
         data: {
           name: normalizedName,
           userId
         }
       });
 
-      return reply.status(201).send({ productTypeId: newProductType.id });
+      return reply.status(201).send({ unitTypeId: newUnitType.id });
     } catch (error) {
       console.error(error);
       return reply.status(500).send({ message: "Internal Server Error." });
