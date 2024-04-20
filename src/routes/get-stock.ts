@@ -25,16 +25,47 @@ export async function getStock(app: FastifyInstance) {
         include: {
           products: {
             select: {
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  type: {
+                    select: {
+                      name: true
+                    }
+                  },
+                  unitType: {
+                    select: {
+                      name: true
+                    }
+                  },
+                  minQuantity: true
+                }
+              },
               quantity:true,
-              addedAt: true,
-              productId: true
+              addedAt: true
             }
           }
         }
       });
 
+      const formatedStockObject = {
+        ...stock,
+        products: stock?.products.map((product) => {
+          return {
+            id: product.product.id,
+            name: product.product.name,
+            type: product.product.type.name,
+            unitType: product.product.unitType?.name,
+            minQuantity: product.product.minQuantity,
+            quantityInStock: product.quantity,
+            addedAt: product.addedAt
+          };
+        })
+      };
+
       if (stock) {
-        return reply.status(200).send({ stock });
+        return reply.status(200).send({ stock: formatedStockObject });
       } else {
         return reply.status(400).send({ message: "User does not have a stock yet or is trying to access a stock that does not own." });
       }

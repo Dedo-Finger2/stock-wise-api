@@ -7,6 +7,7 @@ import { verifyToken } from "./routes/verify-token";
 
 import { createStock } from "./routes/create-stock";
 import { getStock } from "./routes/get-stock";
+import { addProductToStock } from "./routes/add-product-to-stock";
 
 import { createProductType } from "./routes/create-product-type";
 
@@ -26,6 +27,7 @@ app.register(createUnitType);
 app.register(createProduct);
 app.register(updateProduct);
 app.register(getProductPriceLogs);
+app.register(addProductToStock);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`Running... http://localhost:${env.PORT}/`);
