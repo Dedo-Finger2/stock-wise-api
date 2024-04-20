@@ -8,11 +8,14 @@ import { verifyToken } from "./routes/verify-token";
 import { createStock } from "./routes/create-stock";
 import { getStock } from "./routes/get-stock";
 
+import { createProductType } from "./routes/create-product-type";
+
 app.register(login);
 app.register(registerUser);
 app.register(verifyToken);
 app.register(createStock);
 app.register(getStock);
+app.register(createProductType);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`Running... http://localhost:${env.PORT}/`);
