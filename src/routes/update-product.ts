@@ -3,9 +3,9 @@ import { database } from "../config/database";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
 
-export async function createProduct(app: FastifyInstance) {
-  app.post("/api/products/", { preHandler: auth }, async (request, reply) => {
-    const createProductBodySchema = z.object({
+export async function updateProduct(app: FastifyInstance) {
+  app.put("/api/products/:id", { preHandler: auth }, async (request, reply) => {
+    const updateProductBodySchema = z.object({
       name: z.string(),
       description: z.string().optional().nullable(),
       minQuantity: z.coerce.number().positive(),
@@ -15,9 +15,13 @@ export async function createProduct(app: FastifyInstance) {
     const requestCookiesSchema = z.object({
       userId: z.string().uuid()
     });
+    const requestParamsSchema = z.object({
+      id: z.string().uuid()
+    });
 
-    const { name, description, minQuantity, productTypeId, unitTypeId } = createProductBodySchema.parse(request.body);
+    const { name, description, minQuantity, productTypeId, unitTypeId } = updateProductBodySchema.parse(request.body);
     const { userId } = requestCookiesSchema.parse(request.cookies);
+    const { id } = requestParamsSchema.parse(request.params);
 
     try {
       const normalizedName = name.toLowerCase()
@@ -40,7 +44,9 @@ export async function createProduct(app: FastifyInstance) {
         }
       });
 
-      if (doesProductAlreadyExists) {
+      const isUserTheProductOwner = doesProductAlreadyExists?.id !== id && doesProductAlreadyExists?.userId === userId;
+
+      if (doesProductAlreadyExists && isUserTheProductOwner) {
         return reply.status(400).send({ message: `A Product with name ${formatedNormilzedName} is already registered.` });
       }
 
@@ -66,9 +72,12 @@ export async function createProduct(app: FastifyInstance) {
         }
       }
 
-      const newProduct = await database.product.create({
+      const updatedProduct = await database.product.update({
+        where: {
+          id,
+          userId
+        },
         data: {
-          userId,
           name: formatedNormilzedName,
           minQuantity,
           description,
@@ -77,7 +86,7 @@ export async function createProduct(app: FastifyInstance) {
         }
       });
 
-      return reply.status(201).send({ productId: newProduct.id });
+      return reply.status(200).send({ productId: updatedProduct.id });
     } catch (error) {
       console.error(error);
       return reply.status(500).send({ message: "Internal Server Error." });
