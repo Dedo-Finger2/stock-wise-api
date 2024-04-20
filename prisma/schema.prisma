@@ -12,3 +12,130 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  unitTypes     UnitType[]
+  productTypes  ProductType[]
+  stock         Stock?
+  shoppingLists ShoppingList[]
+  products      Product[]
+
+  @@map("users")
+}
+
+model UnitType {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  products Product[]
+
+  @@unique([userId, name])
+  @@map("unit_types")
+}
+
+model ProductType {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  products Product[]
+
+  @@unique([userId, name])
+  @@map("product_types")
+}
+
+model Stock {
+  id        String    @id @default(uuid())
+  userId    String    @unique @map("user_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  user     User            @relation(fields: [userId], references: [id])
+  products StockProducts[]
+
+  @@map("stocks")
+}
+
+model ShoppingList {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @map("updated_at")
+
+  user     User                   @relation(fields: [userId], references: [id])
+  products ShoppingListProducts[]
+
+  @@map("shopping_lists")
+}
+
+model Product {
+  id            String    @id @default(uuid())
+  userId        String    @map("user_id")
+  name          String
+  description   String?
+  minQuantity   Float     @map("min_quantity")
+  productTypeId String    @map("product_type_id")
+  unitTypeId    String?   @map("unit_type_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+
+  unitType      UnitType?              @relation(fields: [unitTypeId], references: [id])
+  type          ProductType            @relation(fields: [productTypeId], references: [id])
+  user          User                   @relation(fields: [userId], references: [id])
+  stocks        StockProducts[]
+  shoppingLists ShoppingListProducts[]
+  price         ProductPriceLog[]
+
+  @@unique([name, userId])
+  @@map("products")
+}
+
+model StockProducts {
+  productId String   @map("product_id")
+  stockId   String   @map("stock_id")
+  quantity  Float
+  addedAt   DateTime @default(now()) @map("added_at")
+
+  product Product @relation(fields: [productId], references: [id])
+  stock   Stock   @relation(fields: [stockId], references: [id])
+
+  @@unique([productId, stockId])
+  @@map("stock_products")
+}
+
+model ShoppingListProducts {
+  productId      String   @map("produtct_id")
+  shoppingListId String   @map("shopping_list_id")
+  quantityBought Float    @map("quantity_bought")
+  pricePaid      Decimal? @map("price_paid") @db.Money
+
+  product      Product      @relation(fields: [productId], references: [id])
+  shoppingList ShoppingList @relation(fields: [shoppingListId], references: [id])
+
+  @@unique([productId, shoppingListId])
+  @@map("shopping_list_products")
+}
+
+model ProductPriceLog {
+  id        Int     @id @default(autoincrement())
+  productId String  @map("product_id")
+  price     Decimal @db.Money
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("product_price_logs")
+}
