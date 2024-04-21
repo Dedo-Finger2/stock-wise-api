@@ -9,6 +9,7 @@ import { createStock } from "./routes/create-stock";
 import { getStock } from "./routes/get-stock";
 import { addProductToStock } from "./routes/add-product-to-stock";
 import { removeProductFromStock } from "./routes/remove-product-from-stock";
+import { deleteProductFromStock } from "./routes/delete-product-from-stock";
 
 import { createProductType } from "./routes/create-product-type";
 
@@ -30,6 +31,7 @@ app.register(updateProduct);
 app.register(getProductPriceLogs);
 app.register(addProductToStock);
 app.register(removeProductFromStock);
+app.register(deleteProductFromStock);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`Running... http://localhost:${env.PORT}/`);
