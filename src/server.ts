@@ -19,6 +19,8 @@ import { createProduct } from "./routes/create-product";
 import { updateProduct } from "./routes/update-product";
 import { getProductPriceLogs } from "./routes/check-product-price-log";
 
+import { createAutoShoppingList } from "./routes/create-auto-shopping-list";
+
 app.register(login);
 app.register(registerUser);
 app.register(verifyToken);
@@ -32,6 +34,7 @@ app.register(getProductPriceLogs);
 app.register(addProductToStock);
 app.register(removeProductFromStock);
 app.register(deleteProductFromStock);
+app.register(createAutoShoppingList);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`Running... http://localhost:${env.PORT}/`);
