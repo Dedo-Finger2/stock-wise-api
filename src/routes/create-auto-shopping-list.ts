@@ -4,7 +4,7 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 
 export async function createAutoShoppingList(app: FastifyInstance) {
-  app.post("/api/shopping-lists/", { preHandler: auth }, async (request, reply) => {
+  app.post("/api/shopping-lists/auto", { preHandler: auth }, async (request, reply) => {
     const requestCookiesSchema = z.object({
       userId: z.string().uuid()
     });
