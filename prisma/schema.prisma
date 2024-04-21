@@ -120,7 +120,7 @@ model StockProducts {
 model ShoppingListProducts {
   productId      String   @map("produtct_id")
   shoppingListId String   @map("shopping_list_id")
-  quantityBought Float    @map("quantity_bought")
+  quantityBought Float?   @map("quantity_bought")
   pricePaid      Decimal? @map("price_paid") @db.Money
 
   product      Product      @relation(fields: [productId], references: [id])
