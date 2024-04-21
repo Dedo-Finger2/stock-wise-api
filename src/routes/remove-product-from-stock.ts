@@ -57,46 +57,29 @@ export async function removeProductFromStock(app: FastifyInstance) {
 
       const isRemovingQuantityGreaterThanProductInStockQuantity = isProductInStock.quantity < quantity ? true : false;
       const newProductQuantity = isProductInStock.quantity - quantity;
-      const isNewProductQuantityTheSameAsRemovingQuantity = newProductQuantity === 0 ? true : false;
 
       if (isRemovingQuantityGreaterThanProductInStockQuantity) {
         return reply.status(400).send({ message: "The given number suprass the quantity in stock for this product." });
       }
 
-      if (isNewProductQuantityTheSameAsRemovingQuantity) {
-        await database.stockProducts.delete({
-          where: {
-            productId_stockId: {
-              productId,
-              stockId: id
-            },
-            stock: {
-              userId
-            },
-            product: {
-              userId
-            }
-          }
-        });
-      } else {
-        await database.stockProducts.update({
-          where: {
-            productId_stockId: {
-              productId,
-              stockId: id
-            },
-            stock: {
-              userId
-            },
-            product: {
-              userId
-            }
+      await database.stockProducts.update({
+        where: {
+          productId_stockId: {
+            productId,
+            stockId: id
           },
-          data: {
-            quantity: newProductQuantity
+          stock: {
+            userId
+          },
+          product: {
+            userId
           }
-        });
-      }
+        },
+        data: {
+          quantity: newProductQuantity
+        }
+      });
+
 
       await database.stock.update({
         where: {
