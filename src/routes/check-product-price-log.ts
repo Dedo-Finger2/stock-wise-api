@@ -27,6 +27,13 @@ export async function getProductPriceLogs(app: FastifyInstance) {
         const productPriceLogs = await database.productPriceLog.findMany({
           where: {
             productId: product.id
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          select: {
+            price: true,
+            createdAt: true
           }
         });
 
