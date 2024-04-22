@@ -131,9 +131,10 @@ model ShoppingListProducts {
 }
 
 model ProductPriceLog {
-  id        Int     @id @default(autoincrement())
-  productId String  @map("product_id")
-  price     Decimal @db.Money
+  id        Int      @id @default(autoincrement())
+  productId String   @map("product_id")
+  price     Decimal  @db.Money
+  createdAt DateTime @default(now()) @map("created_at")
 
   product Product @relation(fields: [productId], references: [id])
 
