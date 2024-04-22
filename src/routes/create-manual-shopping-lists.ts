@@ -12,13 +12,13 @@ export async function createManualShoppingList(app: FastifyInstance) {
     const { userId } = requestCookiesSchema.parse(request.cookies);
 
     try {
-      await database.shoppingList.create({
+      const newShoppingList = await database.shoppingList.create({
         data: {
           userId
         }
       });
 
-      return reply.status(201).send({ message: "New shopping list created." });
+      return reply.status(201).send({ shoppingListId: newShoppingList.id });
     } catch (error) {
       console.error(error);
       return reply.status(500).send({ message: "Internal Server Error." });
