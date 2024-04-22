@@ -24,6 +24,7 @@ import { createManualShoppingList } from "./routes/create-manual-shopping-lists"
 import { addProductToShoppingList } from "./routes/add-product-to-shopping-list";
 import { removeProductFromShoppingList } from "./routes/remove-product-from-shopping-list";
 import { completeShoppingList } from "./routes/complete-shopping-list";
+import { printShoppingList } from "./routes/print-shopping-list";
 
 app.register(login);
 app.register(registerUser);
@@ -43,6 +44,7 @@ app.register(createManualShoppingList);
 app.register(addProductToShoppingList);
 app.register(removeProductFromShoppingList);
 app.register(completeShoppingList);
+app.register(printShoppingList);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`Running... http://localhost:${env.PORT}/`);
