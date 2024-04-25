@@ -14,7 +14,7 @@ interface ReturnSchema {
   updatedAt: Date | null;
 }
 
-export class PostgresGetProductInShoppingListRepository implements IRepository {
+export class PostgresUpdateShoppingListUpdatedAtByIndexRepository implements IRepository {
   async execute({ shoppingListid, userId }: ParamsSchema): Promise<ReturnSchema | null> {
     const updatedShoppingList = await database.shoppingList.update({
       where: {

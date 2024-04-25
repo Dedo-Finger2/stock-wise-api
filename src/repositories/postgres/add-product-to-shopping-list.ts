@@ -14,7 +14,7 @@ interface ReturnSchema {
   pricePaid: Decimal | null;
 }
 
-export class PostgresGetProductInShoppingListRepository implements IRepository {
+export class PostgresAddProductToShoppingListRepository implements IRepository {
   async execute({ productId, shoppingListId }: ParamsSchema): Promise<ReturnSchema | null> {
     const productAddedToShoppingList = await database.shoppingListProducts.create({
       data: {
