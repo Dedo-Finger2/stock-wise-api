@@ -15,9 +15,9 @@ interface ReturnSchema {
   pricePaid: Decimal | null;
 }
 
-export class PostgresGetProductInShoppingListRepository implements IRepository {
+export class PostgresRemoveProductFromShoppingListByIndexRepository implements IRepository {
   async execute({ productId, shoppingListId, userId }: ParamsSchema): Promise<ReturnSchema | null> {
-    const product = await database.shoppingListProducts.findUnique({
+    const removedProduct = await database.shoppingListProducts.delete({
       where: {
         productId_shoppingListId: {
           productId,
@@ -32,6 +32,6 @@ export class PostgresGetProductInShoppingListRepository implements IRepository {
       }
     });
 
-    return product;
+    return removedProduct;
   }
 }

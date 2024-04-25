@@ -2,8 +2,8 @@ import { IRepository } from "../repository";
 import { database } from "../../config/database";
 
 interface ParamsSchema {
-  productId: string;
   userId: string;
+  formattedNormalizedName: string;
 }
 
 interface ReturnSchema {
@@ -19,14 +19,16 @@ interface ReturnSchema {
 }
 
 export class PostgresGetProductByIndexRepository implements IRepository {
-  async execute({ productId, userId }: ParamsSchema): Promise<ReturnSchema | null> {
-    const product = await database.product.findUnique({
+  async execute({ userId, formattedNormalizedName }: ParamsSchema): Promise<ReturnSchema | null> {
+    const productType = await database.product.findUnique({
       where: {
-        id: productId,
-        userId
+        name_userId: {
+          name: formattedNormalizedName,
+          userId
+        }
       }
     });
 
-    return product;
+    return productType;
   }
 }

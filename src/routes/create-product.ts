@@ -46,7 +46,8 @@ export async function createProduct(app: FastifyInstance) {
 
       const isProductTypeIdRegistered = await database.productType.findUnique({
         where: {
-          id: productTypeId
+          id: productTypeId,
+          userId
         }
       });
 

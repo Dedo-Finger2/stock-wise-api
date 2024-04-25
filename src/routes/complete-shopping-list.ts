@@ -58,7 +58,7 @@ export async function completeShoppingList(app: FastifyInstance) {
       // Atualizar preço dos produtos que tiveram preço dito
       // TODO: Probleminha de tipagem que pode ser concertado no futuro
       if (productsWithPricePaidArray) {
-        await database.productPriceLog.createMany({
+        const teste = await database.productPriceLog.createMany({
           data: productsWithPricePaidArray.map((product) => { return { productId: product.productId, price: product!.pricePaid }; })
         });
       }
